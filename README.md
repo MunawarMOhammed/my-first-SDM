@@ -51,8 +51,11 @@ VariableVIFbio161.42 ✅bio171.29 ✅biome1.18 ✅
 "leaflet"
 
 📂 Project Structure
+
+```
 my-first-SDM/
 ├── Bradypus_GLM.qmd        # Source Quarto notebook
 ├── Bradypus_GLM.html       # Rendered HTML output
 ├── my_first_SDM.Rproj      # RStudio project file
 └── README.md               # This file
+```
