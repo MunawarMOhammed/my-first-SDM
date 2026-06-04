@@ -26,19 +26,29 @@ biome Biome type map of South America.
 Pseudo-Absence   116 randomly generated absence points.
 
 
-🔬 Key Results
+🔬 Key Results 
+
 Significant Variables (after VIF cleaning)
+
 VariableCoefficientp-valueMeaningbio16+0.00210.0005 ***Wetter wet season → more suitablebio17+0.00070.517Not significantbiome-0.0940.081Weak effect
+
 Model Performance
+
 MetricValueAUC0.90  Null deviance256.42Residual deviance210.50Deviance explained18%AIC218.5
+
 VIF Results (after cleaning)
+
 VariableVIFbio161.42 ✅bio171.29 ✅biome1.18 ✅
 
-🚀 How to Run
-Prerequisites
-Make sure you have R and RStudio installed, then install the required packages:
-rinstall.packages(c("dismo", "terra", "ggplot2", "dplyr", 
-                   "pROC", "car", "leaflet"))
+🚀 packages:
+
+"dismo", 
+"terra", 
+"ggplot2", 
+"dplyr", 
+"pROC", 
+"car", 
+"leaflet"
 
 📂 Project Structure
 my-first-SDM/
