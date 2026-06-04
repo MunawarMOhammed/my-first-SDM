@@ -1,0 +1,8 @@
+"0","#| label: load-libraries"
+"0","#| message: false"
+"0","#| warning: false"
+"0",""
+"0","library(dismo)"
+"0","library(terra)"
+"0","library(ggplot2)"
+"0","library(dplyr)"

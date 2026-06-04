@@ -1,0 +1,8 @@
+"0","#| label: load-data"
+"0",""
+"0","# Load Bradypus occurrence data"
+"0","file <- paste(system.file(package=""dismo""), ""/ex/bradypus.csv"", sep="""")"
+"0","bradypus <- read.csv(file)"
+"0",""
+"0","# Quick look at the data"
+"0","head(bradypus)"

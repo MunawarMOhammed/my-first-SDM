@@ -1,0 +1,4 @@
+"0",""
+"0","# Add sloth points in red on top"
+"0","points(bradypus[,2:3], col=""red"", pch=20, cex=0.8)"
+"0",""

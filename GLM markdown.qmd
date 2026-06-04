@@ -1,0 +1,309 @@
+---
+title: "Bradypus GLM - My First SDM"
+author: "Abdul Munawar Mohammed"
+date: 06-05-2026
+format: html
+editor: visual
+---
+
+## Introduction
+
+This notebook builds a Species Distribution Model (SDM) for *Bradypus variegatus* (three-toed sloth) using a Generalised Linear Model (GLM). Following the standard protocol by Zurell et al. (2020), we use climate data from WorldClim to predict habitat suitability across South America.
+
+## Objectives
+
+1.  Load and explore species occurrence data
+2.  Generate pseudo-absence points
+3.  Extract environmental predictors
+4.  Check multicollinearity using VIF
+5.  Fit and evaluate a logistic GLM
+6.  Map predicted habitat suitability
+
+## Species
+
+**Bradypus variegatus** (three-toed sloth) is a tropical mammal native to Central and South America. It thrives in warm, humid environments and is strongly associated with tropical forest biomes.
+
+```{r}
+#| label: load-libraries
+#| message: false
+#| warning: false
+
+library(dismo)
+library(terra)
+library(ggplot2)
+library(dplyr)
+
+```
+
+```{r}
+#| label: load-data
+
+# Load Bradypus occurrence data
+file <- paste(system.file(package="dismo"), "/ex/bradypus.csv", sep="")
+bradypus <- read.csv(file)
+
+# Quick look at the data
+head(bradypus)
+nrow(bradypus)
+```
+
+```{r}
+#| label: load-environment
+#| message: false
+
+# Load the environmental raster layers
+files <- list.files(path=paste(system.file(package="dismo"), "/ex", sep=""),
+                    pattern="grd", full.names=TRUE)
+
+predictors <- rast(files)
+
+# See what variables we have
+names(predictors)
+
+
+```
+
+```{r}
+
+#| label: plot-occurrences
+
+# Plot first layer - annual mean temperature
+plot(predictors[[1]], main="Bradypus variegatus occurrences")
+
+# Add sloth points in red on top
+points(bradypus[,2:3], col="red", pch=20, cex=0.8)
+
+```
+
+```{r}
+
+
+#| label: pseudo-absences
+#| message: false
+
+# Convert to old raster format so dismo can read it
+predictors_raster <- as(predictors, "Raster")
+
+# Set a seed so results are reproducible
+set.seed(42)
+
+# Generate 116 random absence points
+absence <- randomPoints(predictors_raster, n=116)
+
+# Convert to dataframe
+absence <- as.data.frame(absence)
+colnames(absence) <- c("lon", "lat")
+
+# Quick look
+head(absence)
+nrow(absence)
+
+
+```
+
+```{r}
+
+#| label: extract-values
+#| message: false
+
+# Extract environmental values at presence points
+presence_vals <- extract(predictors, bradypus[,2:3])
+
+# Extract environmental values at absence points  
+absence_vals <- extract(predictors, absence)
+
+# Add a column to label them 1 (present) or 0 (absent)
+presence_vals$presence <- 1
+absence_vals$presence <- 0
+
+# Combine into one dataset
+model_data <- rbind(presence_vals, absence_vals)
+
+# Quick look
+head(model_data)
+nrow(model_data)
+
+```
+
+```{r}
+
+#| label: clean-data
+
+# Remove any rows with missing values
+model_data <- na.omit(model_data)
+
+# Check final size
+nrow(model_data)
+
+# Check balance of presence vs absence
+table(model_data$presence)
+
+```
+
+```{r}
+
+#| label: split-data
+
+set.seed(42)
+
+# Create a random 80/20 split
+train_index <- sample(1:nrow(model_data), size = 0.8 * nrow(model_data))
+
+train_data <- model_data[train_index, ]
+test_data  <- model_data[-train_index, ]
+
+nrow(train_data)
+nrow(test_data)
+
+```
+
+```{r}
+
+
+#| label: vif-check
+#| message: false
+#| warning: false
+
+library(car)
+
+# Remove highly correlated variables and retest
+glm_vif2 <- glm(presence ~ bio17 + bio16 + biome,
+                data = train_data,
+                family = binomial(link = "logit"))
+
+vif_values2 <- vif(glm_vif2)
+
+vif_table2 <- data.frame(
+  Variable = names(vif_values2),
+  VIF = round(vif_values2, 2)
+)
+
+vif_table2 <- vif_table2[order(vif_table2$VIF, decreasing = TRUE), ]
+print(vif_table2)
+
+```
+
+```{r}
+#| label: fit-glm
+
+# Refit GLM with VIF-selected variables only
+glm_model <- glm(presence ~ bio16 + bio17 + biome,
+                 data = train_data,
+                 family = binomial(link = "logit"))
+
+summary(glm_model)
+
+```
+
+```{r}
+
+#| label: evaluate-model
+#| message: false
+#| warning: false
+
+library(pROC)
+
+# Predict on test data
+predictions <- predict(glm_model, newdata = test_data, type = "response")
+
+# Calculate AUC
+roc_curve <- roc(test_data$presence, predictions)
+auc(roc_curve)
+
+# Plot the ROC curve
+plot(roc_curve, main="ROC Curve - Bradypus GLM", col="blue", lwd=2)
+
+```
+
+```{r}
+
+#| label: effect-size-plot
+#| message: false
+
+# Extract coefficients from the model
+coefs <- summary(glm_model)$coefficients
+effect_sizes <- data.frame(
+  Variable = rownames(coefs)[-1],
+  Effect_Size = coefs[-1, "Estimate"],
+  Std_Error = coefs[-1, "Std. Error"]
+)
+
+# Plot effect sizes with error bars
+ggplot(effect_sizes, aes(x = reorder(Variable, Effect_Size), y = Effect_Size)) +
+  geom_bar(stat = "identity", fill = "#11aa96") +
+  geom_errorbar(aes(ymin = Effect_Size - Std_Error, 
+                    ymax = Effect_Size + Std_Error), width = 0.2) +
+  coord_flip() +
+  labs(title = "Effect Size of Each Variable",
+       x = "Variable",
+       y = "Coefficient Estimate") +
+  theme_minimal()
+
+
+```
+
+```{r}
+
+#| label: response-curves
+#| message: false
+
+# Response curve for bio16
+bio16_range <- seq(min(train_data$bio16), max(train_data$bio16), length.out = 100)
+response_data <- data.frame(
+  bio16 = bio16_range,
+  bio17 = mean(train_data$bio17),
+  biome = mean(train_data$biome)
+)
+response_data$predicted <- predict(glm_model, newdata = response_data, type = "response")
+
+ggplot(response_data, aes(x = bio16, y = predicted)) +
+  geom_line(color = "#378ADD", linewidth = 1) +
+  labs(title = "Species Response Curve — bio16 (Wettest Quarter Rainfall)",
+       x = "Precipitation of Wettest Quarter (mm)",
+       y = "Predicted Probability of Presence") +
+  theme_minimal()
+
+```
+
+```{r}
+
+```
+
+```         
+```
+
+## Predicted Bradypus Habitat Suitability Map  For SA
+
+```{r}
+
+#| label: interactive-map
+#| message: false
+#| warning: false
+
+library(leaflet)
+library(terra)
+
+# Convert prediction map to a format leaflet can read
+prediction_map <- predict(predictors, glm_model, type="response")
+
+# Define colour palette
+pal <- colorNumeric(
+  palette = c("white", "yellow", "orange", "red"),
+  domain = values(prediction_map),
+  na.color = "transparent"
+)
+
+# Create interactive map
+leaflet() %>%
+  addProviderTiles(providers$Esri.WorldImagery) %>%
+  addRasterImage(prediction_map, 
+                 colors = pal, 
+                 opacity = 0.7,
+                 project = TRUE) %>%
+  addLegend(pal = pal,
+            values = values(prediction_map),
+            title = "Habitat suitability",
+            position = "bottomright") %>%
+  addScaleBar(position = "bottomleft")
+
+```

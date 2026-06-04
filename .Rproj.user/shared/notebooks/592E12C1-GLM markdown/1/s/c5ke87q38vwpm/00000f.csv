@@ -1,0 +1,5 @@
+"0",""
+"0","#| label: plot-occurrences"
+"0",""
+"0","# Plot first layer - annual mean temperature"
+"0","plot(predictors[[1]], main=""Bradypus variegatus occurrences"")"

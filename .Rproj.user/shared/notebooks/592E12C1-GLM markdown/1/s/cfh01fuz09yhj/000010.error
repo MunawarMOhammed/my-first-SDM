@@ -1,0 +1,1 @@
+{"frames":[],"message":"Error in ggplot(effect_sizes, aes(x = reorder(Variable, Effect_Size),  : \n  could not find function \"ggplot\"\n"}

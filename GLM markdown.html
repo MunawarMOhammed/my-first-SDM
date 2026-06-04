@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Abdul Munawar Mohammed">
+<meta name="dcterms.date" content="2026-06-05">
+
+<title>Bradypus GLM - My First SDM</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="GLM markdown_files/libs/clipboard/clipboard.min.js"></script>
+<script src="GLM markdown_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="GLM markdown_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="GLM markdown_files/libs/quarto-html/popper.min.js"></script>
+<script src="GLM markdown_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="GLM markdown_files/libs/quarto-html/anchor.min.js"></script>
+<link href="GLM markdown_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="GLM markdown_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="GLM markdown_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="GLM markdown_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="GLM markdown_files/libs/bootstrap/bootstrap-efbb37e9afcc02144ebbc7afd12a776f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="GLM markdown_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="GLM markdown_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="GLM markdown_files/libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+
+<link href="GLM markdown_files/libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+
+<script src="GLM markdown_files/libs/leaflet-1.3.1/leaflet.js"></script>
+
+<link href="GLM markdown_files/libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+
+<script src="GLM markdown_files/libs/proj4-2.6.2/proj4.min.js"></script>
+
+<script src="GLM markdown_files/libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+
+<link href="GLM markdown_files/libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+
+<script src="GLM markdown_files/libs/leaflet-binding-2.2.3/leaflet.js"></script>
+
+<script src="GLM markdown_files/libs/leaflet-providers-3.0.0/leaflet-providers.js"></script>
+
+<script src="GLM markdown_files/libs/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script>
+
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Bradypus GLM - My First SDM</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Abdul Munawar Mohammed </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 5, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This notebook builds a Species Distribution Model (SDM) for <em>Bradypus variegatus</em> (three-toed sloth) using a Generalised Linear Model (GLM). Following the standard protocol by Zurell et al.&nbsp;(2020), we use climate data from WorldClim to predict habitat suitability across South America.</p>
+</section>
+<section id="objectives" class="level2">
+<h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+<ol type="1">
+<li>Load and explore species occurrence data</li>
+<li>Generate pseudo-absence points</li>
+<li>Extract environmental predictors</li>
+<li>Check multicollinearity using VIF</li>
+<li>Fit and evaluate a logistic GLM</li>
+<li>Map predicted habitat suitability</li>
+</ol>
+</section>
+<section id="species" class="level2">
+<h2 class="anchored" data-anchor-id="species">Species</h2>
+<p><strong>Bradypus variegatus</strong> (three-toed sloth) is a tropical mammal native to Central and South America. It thrives in warm, humid environments and is strongly associated with tropical forest biomes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dismo)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Bradypus occurrence data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">system.file</span>(<span class="at">package=</span><span class="st">"dismo"</span>), <span class="st">"/ex/bradypus.csv"</span>, <span class="at">sep=</span><span class="st">""</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>bradypus <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(file)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick look at the data</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bradypus)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              species      lon      lat
+1 Bradypus variegatus -65.4000 -10.3833
+2 Bradypus variegatus -65.3833 -10.3833
+3 Bradypus variegatus -65.1333 -16.8000
+4 Bradypus variegatus -63.6667 -17.4500
+5 Bradypus variegatus -63.8500 -17.4000
+6 Bradypus variegatus -64.4167 -16.0000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(bradypus)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 116</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the environmental raster layers</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path=</span><span class="fu">paste</span>(<span class="fu">system.file</span>(<span class="at">package=</span><span class="st">"dismo"</span>), <span class="st">"/ex"</span>, <span class="at">sep=</span><span class="st">""</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">pattern=</span><span class="st">"grd"</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>predictors <span class="ot">&lt;-</span> <span class="fu">rast</span>(files)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># See what variables we have</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(predictors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "bio1"  "bio12" "bio16" "bio17" "bio5"  "bio6"  "bio7"  "bio8"  "biome"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot-occurrences</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot first layer - annual mean temperature</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(predictors[[<span class="dv">1</span>]], <span class="at">main=</span><span class="st">"Bradypus variegatus occurrences"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add sloth points in red on top</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(bradypus[,<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>], <span class="at">col=</span><span class="st">"red"</span>, <span class="at">pch=</span><span class="dv">20</span>, <span class="at">cex=</span><span class="fl">0.8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="GLM-markdown_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: pseudo-absences</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to old raster format so dismo can read it</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>predictors_raster <span class="ot">&lt;-</span> <span class="fu">as</span>(predictors, <span class="st">"Raster"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set a seed so results are reproducible</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate 116 random absence points</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>absence <span class="ot">&lt;-</span> <span class="fu">randomPoints</span>(predictors_raster, <span class="at">n=</span><span class="dv">116</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to dataframe</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>absence <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(absence)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(absence) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick look</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(absence)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      lon    lat
+1  -90.75  16.25
+2  -67.75 -39.25
+3  -68.25   3.75
+4  -73.75 -37.25
+5  -73.75   6.75
+6 -105.25  19.75</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(absence)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 116</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: extract-values</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract environmental values at presence points</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>presence_vals <span class="ot">&lt;-</span> <span class="fu">extract</span>(predictors, bradypus[,<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>])</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract environmental values at absence points  </span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>absence_vals <span class="ot">&lt;-</span> <span class="fu">extract</span>(predictors, absence)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a column to label them 1 (present) or 0 (absent)</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>presence_vals<span class="sc">$</span>presence <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>absence_vals<span class="sc">$</span>presence <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into one dataset</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>model_data <span class="ot">&lt;-</span> <span class="fu">rbind</span>(presence_vals, absence_vals)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick look</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(model_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  ID bio1 bio12 bio16 bio17 bio5 bio6 bio7 bio8 biome presence
+1  1  263  1639   724    62  338  191  147  261     1        1
+2  2  263  1639   724    62  338  191  147  261     1        1
+3  3  253  3624  1547   373  329  150  179  271     1        1
+4  4  243  1693   775   186  318  150  168  264     1        1
+5  5  243  1693   775   186  318  150  168  264     1        1
+6  6  252  2501  1081   280  326  154  172  270     1        1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(model_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 232</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: clean-data</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any rows with missing values</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>model_data <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(model_data)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Check final size</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(model_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 232</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check balance of presence vs absence</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(model_data<span class="sc">$</span>presence)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  0   1 
+116 116 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: split-data</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a random 80/20 split</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>train_index <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(model_data), <span class="at">size =</span> <span class="fl">0.8</span> <span class="sc">*</span> <span class="fu">nrow</span>(model_data))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> model_data[train_index, ]</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">&lt;-</span> model_data[<span class="sc">-</span>train_index, ]</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(train_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 185</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(test_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 47</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: vif-check</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'car'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    recode</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove highly correlated variables and retest</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>glm_vif2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(presence <span class="sc">~</span> bio17 <span class="sc">+</span> bio16 <span class="sc">+</span> biome,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">data =</span> train_data,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>vif_values2 <span class="ot">&lt;-</span> <span class="fu">vif</span>(glm_vif2)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>vif_table2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">names</span>(vif_values2),</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">VIF =</span> <span class="fu">round</span>(vif_values2, <span class="dv">2</span>)</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>vif_table2 <span class="ot">&lt;-</span> vif_table2[<span class="fu">order</span>(vif_table2<span class="sc">$</span>VIF, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), ]</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(vif_table2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Variable  VIF
+bio16    bio16 1.42
+bio17    bio17 1.29
+biome    biome 1.18</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Refit GLM with VIF-selected variables only</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>glm_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(presence <span class="sc">~</span> bio16 <span class="sc">+</span> bio17 <span class="sc">+</span> biome,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> train_data,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(glm_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = presence ~ bio16 + bio17 + biome, family = binomial(link = "logit"), 
+    data = train_data)
+
+Coefficients:
+              Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -1.4904758  0.5337576  -2.792 0.005232 ** 
+bio16        0.0021054  0.0006045   3.483 0.000496 ***
+bio17        0.0007265  0.0011225   0.647 0.517484    
+biome       -0.0943741  0.0541546  -1.743 0.081390 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 256.42  on 184  degrees of freedom
+Residual deviance: 210.50  on 181  degrees of freedom
+AIC: 218.5
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: evaluate-model</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Type 'citation("pROC")' for a citation.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'pROC'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    cov, smooth, var</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict on test data</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(glm_model, <span class="at">newdata =</span> test_data, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate AUC</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>roc_curve <span class="ot">&lt;-</span> <span class="fu">roc</span>(test_data<span class="sc">$</span>presence, predictions)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting levels: control = 0, case = 1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Setting direction: controls &lt; cases</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">auc</span>(roc_curve)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area under the curve: 0.9</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the ROC curve</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(roc_curve, <span class="at">main=</span><span class="st">"ROC Curve - Bradypus GLM"</span>, <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="GLM-markdown_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: effect-size-plot</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficients from the model</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">summary</span>(glm_model)<span class="sc">$</span>coefficients</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>effect_sizes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">rownames</span>(coefs)[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Effect_Size =</span> coefs[<span class="sc">-</span><span class="dv">1</span>, <span class="st">"Estimate"</span>],</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Std_Error =</span> coefs[<span class="sc">-</span><span class="dv">1</span>, <span class="st">"Std. Error"</span>]</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot effect sizes with error bars</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(effect_sizes, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Variable, Effect_Size), <span class="at">y =</span> Effect_Size)) <span class="sc">+</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"#11aa96"</span>) <span class="sc">+</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Effect_Size <span class="sc">-</span> Std_Error, </span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ymax =</span> Effect_Size <span class="sc">+</span> Std_Error), <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Effect Size of Each Variable"</span>,</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Variable"</span>,</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Coefficient Estimate"</span>) <span class="sc">+</span></span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="GLM-markdown_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: response-curves</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Response curve for bio16</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>bio16_range <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(train_data<span class="sc">$</span>bio16), <span class="fu">max</span>(train_data<span class="sc">$</span>bio16), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>response_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">bio16 =</span> bio16_range,</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">bio17 =</span> <span class="fu">mean</span>(train_data<span class="sc">$</span>bio17),</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">biome =</span> <span class="fu">mean</span>(train_data<span class="sc">$</span>biome)</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>response_data<span class="sc">$</span>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(glm_model, <span class="at">newdata =</span> response_data, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(response_data, <span class="fu">aes</span>(<span class="at">x =</span> bio16, <span class="at">y =</span> predicted)) <span class="sc">+</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"#378ADD"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Species Response Curve — bio16 (Wettest Quarter Rainfall)"</span>,</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Precipitation of Wettest Quarter (mm)"</span>,</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Predicted Probability of Presence"</span>) <span class="sc">+</span></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="GLM-markdown_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<pre><code></code></pre>
+</section>
+<section id="predicted-bradypus-habitat-suitability-map-for-sa" class="level2">
+<h2 class="anchored" data-anchor-id="predicted-bradypus-habitat-suitability-map-for-sa">Predicted Bradypus Habitat Suitability Map For SA</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: interactive-map</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert prediction map to a format leaflet can read</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>prediction_map <span class="ot">&lt;-</span> <span class="fu">predict</span>(predictors, glm_model, <span class="at">type=</span><span class="st">"response"</span>)</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Define colour palette</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>pal <span class="ot">&lt;-</span> <span class="fu">colorNumeric</span>(</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"yellow"</span>, <span class="st">"orange"</span>, <span class="st">"red"</span>),</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain =</span> <span class="fu">values</span>(prediction_map),</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.color =</span> <span class="st">"transparent"</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create interactive map</span></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>Esri.WorldImagery) <span class="sc">%&gt;%</span></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addRasterImage</span>(prediction_map, </span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">colors =</span> pal, </span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>                 <span class="at">opacity =</span> <span class="fl">0.7</span>,</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>                 <span class="at">project =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addLegend</span>(<span class="at">pal =</span> pal,</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">values =</span> <span class="fu">values</span>(prediction_map),</span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">title =</span> <span class="st">"Habitat suitability"</span>,</span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>            <span class="at">position =</span> <span class="st">"bottomright"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addScaleBar</span>(<span class="at">position =</span> <span class="st">"bottomleft"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-7d7b3e303c730090a01b" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-7d7b3e303c730090a01b">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addRasterImage","args":["data:image/png;base64,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",[[39.99999999999998,-125],[-56,-31.99999999999999]],null,null,{"tileSize":256,"zIndex":1,"minZoom":0,"opacity":0.7}]},{"method":"addLegend","args":[{"colors":["#FFFFFF , #FFFFE7 4.09853149930933%, #FFFFA8 14.8722216965834%, #FFFF63 25.6459118938576%, #FFF700 36.4196020911317%, #FFDA00 47.1932922884058%, #FFBD00 57.9669824856799%, #FF9F00 68.740672682954%, #FF7C00 79.5143628802281%, #FF5200 90.2880530775023%, #FF0000 "],"labels":["0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9"],"na_color":null,"na_label":"NA","opacity":0.5,"position":"bottomright","type":"numeric","title":"Habitat suitability","extra":{"p_1":0.04098531499309334,"p_n":0.9028805307750225},"layerId":null,"className":"info legend","group":null}]},{"method":"addScaleBar","args":[{"maxWidth":100,"metric":true,"imperial":true,"updateWhenIdle":true,"position":"bottomleft"}]}],"limits":{"lat":[-56,39.99999999999998],"lng":[-125,-31.99999999999999]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
